@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Click Count App</title>
+  </head>
+  <body>
+    <h1>Click Count App</h1>
+    <button id="clickButton">헌화</button>
+    <p id="countValue">0</p>
+
+    <script>
+      // 버튼 클릭 이벤트 핸들러
+      document
+        .getElementById("clickButton")
+        .addEventListener("click", function () {
+          // 서버에 POST 요청 보내기
+          fetch("/increment", { method: "POST" })
+            .then(function (response) {
+              if (response.ok) {
+                // 성공적으로 업데이트되었을 때 메시지 출력
+                alert("헌화가 완료되었습니다");
+                // 카운트 숫자 업데이트
+                updateCountDisplay();
+              } else {
+                throw new Error("클릭 횟수 업데이트 중 오류가 발생했습니다");
+              }
+            })
+            .catch(function (error) {
+              console.error(error);
+              alert("클릭 횟수 업데이트 중 오류가 발생했습니다");
+            });
+        });
+
+      // 카운트 숫자 업데이트 함수
+      function updateCountDisplay() {
+        fetch("/count")
+          .then(function (response) {
+            if (response.ok) {
+              return response.text();
+            } else {
+              throw new Error("카운트 숫자 가져오기 중 오류가 발생했습니다");
+            }
+          })
+          .then(function (count) {
+            document.getElementById("countValue").textContent = count;
+          })
+          .catch(function (error) {
+            console.error(error);
+          });
+      }
+
+      // 페이지 로드 시 카운트 숫자 표시
+      updateCountDisplay();
+    </script>
+  </body>
+</html>
